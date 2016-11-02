@@ -6,8 +6,9 @@
 #
 #
 
-from struct import *
-from timecode import *
+from   struct import *
+from   timecode import *
+import itertools
 import sys
 import json
 
@@ -128,6 +129,19 @@ class STL(object):
 	self.gsi  = None
 	self.tti  = []
 
+    def fromString(self, s = ''):
+	if s != '':
+	    buff = s[0:1024]
+	    s = s[1024:]
+	    self.gsi = GSI_Block(buff)
+	    buff = s[0:128]
+	    s = s[128:]
+	    while buff != '':
+		tti = TTI_Block(buff)
+		self.tti.append(tti)
+		buff = s[0:128]
+		s = s[128:]
+	    
     def load(self, filename = ''):
 	if filename.endswith('.stl') or filename.endswith('.STL'):
 	    try:
